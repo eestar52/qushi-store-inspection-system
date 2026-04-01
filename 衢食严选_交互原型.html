@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>衢食严选 · 门店巡检系统 交互原型</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1F5FAA;--blue2:#2E6BC7;--blue-l:#E8F0FB;--green:#1A8C5A;--green-l:#E6F6EE;--amber:#D97706;--amber-l:#FEF3C7;--red:#DC2626;--red-l:#FEE2E2;--gray:#F4F5F7;--border:#E2E6EC;--text:#1A2333;--text2:#4A5568;--text3:#8A96A8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Noto Sans SC","PingFang SC",sans-serif;background:#1A2333;color:var(--text);font-size:13px;height:100vh;overflow:hidden;}
+
+/* SHELL */
+.shell{display:flex;height:100vh;}
+
+/* LEFT NAV */
+.left-nav{width:220px;background:#0F1724;flex-shrink:0;display:flex;flex-direction:column;padding:0;}
+.nav-brand{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-brand .logo{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.5px;}
+.nav-brand .sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.nav-section{padding:14px 12px 6px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:.08em;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;border-radius:6px;margin:1px 8px;color:rgba(255,255,255,0.55);font-size:12px;font-weight:400;transition:all .15s;}
+.nav-item:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.85);}
+.nav-item.active{background:var(--blue);color:#fff;font-weight:500;}
+.nav-item .ico{width:16px;text-align:center;font-size:13px;}
+.nav-divider{height:1px;background:rgba(255,255,255,0.07);margin:8px 16px;}
+.nav-user{margin-top:auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+
+/* MAIN AREA */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#F0F3F8;}
+
+/* TOP BAR */
+.topbar{height:52px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;}
+.topbar-title{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:0 4px;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:20px 24px;}
+
+/* CARDS */
+.card{background:#fff;border-radius:10px;border:1px solid var(--border);margin-bottom:16px;}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-header h3{font-size:13px;font-weight:600;}
+.card-body{padding:16px 18px;}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.stat-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:16px 18px;}
+.stat-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:11px;color:var(--text3);}
+.stat-delta{font-size:11px;margin-top:6px;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{padding:9px 14px;font-size:11px;font-weight:600;color:var(--text2);text-align:left;background:var(--gray);border-bottom:1px solid var(--border);}
+.tbl td{padding:10px 14px;font-size:12px;border-bottom:1px solid #F0F3F8;color:var(--text);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#F7F9FF;}
+
+/* TAGS/STATUS */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
+.tag-green{background:var(--green-l);color:var(--green);}
+.tag-amber{background:var(--amber-l);color:var(--amber);}
+.tag-red{background:var(--red-l);color:var(--red);}
+.tag-blue{background:var(--blue-l);color:var(--blue);}
+.tag-gray{background:var(--gray);color:var(--text3);}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:inherit;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:var(--blue2);}
+.btn-outline{background:#fff;color:var(--text);border:1px solid var(--border);}
+.btn-outline:hover{background:var(--gray);}
+.btn-sm{padding:4px 10px;font-size:11px;}
+
+/* PROGRESS BAR */
+.pbar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.pbar-fill{height:100%;border-radius:3px;}
+
+/* CHART MOCK */
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:120px;padding:0 4px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar-fill-mock{border-radius:4px 4px 0 0;width:100%;min-height:4px;}
+.bar-lbl{font-size:10px;color:var(--text3);}
+
+/* FORM ELEMENTS */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:11px;font-weight:500;color:var(--text2);}
+.form-input{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;color:var(--text);background:#fff;outline:none;}
+.form-input:focus{border-color:var(--blue);}
+.form-select{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;color:var(--text);background:#fff;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:14px;padding-bottom:16px;position:relative;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;position:relative;z-index:1;}
+.tl-line{position:absolute;left:4px;top:14px;bottom:0;width:1px;background:var(--border);}
+.tl-item:last-child .tl-line{display:none;}
+.tl-content{flex:1;}
+.tl-time{font-size:10px;color:var(--text3);}
+.tl-text{font-size:12px;color:var(--text);}
+
+/* PAGES */
+.page-view{display:none;}
+.page-view.active{display:flex;flex-direction:column;height:100%;}
+
+/* MOBILE SECTION */
+.mobile-shell{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;}
+.mobile-frame{width:320px;flex-shrink:0;}
+.mobile-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.phone{width:320px;background:#fff;border-radius:36px;border:7px solid #1A2333;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.3);}
+.phone-notch{height:28px;background:#1A2333;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;}
+.phone-notch-pill{width:60px;height:5px;background:#333;border-radius:3px;}
+.phone-screen{background:#F4F5F7;overflow:hidden;}
+.ph-topbar{background:var(--blue);padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.ph-topbar .ph-back{color:rgba(255,255,255,0.8);font-size:18px;cursor:pointer;}
+.ph-topbar .ph-title{color:#fff;font-size:14px;font-weight:600;flex:1;}
+.ph-content{padding:14px 14px;overflow-y:auto;}
+.ph-home-bar{height:20px;background:#fff;display:flex;align-items:center;justify-content:center;}
+.ph-home-pill{width:80px;height:4px;background:#CCC;border-radius:2px;}
+
+/* MOBILE COMPONENTS */
+.ph-card{background:#fff;border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.ph-card-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.ph-card-body{padding:12px 14px;}
+.ph-check-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F4F5F7;}
+.ph-check-item:last-child{border-bottom:none;}
+.ph-check-box{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ph-check-box.checked{background:var(--green);border-color:var(--green);color:#fff;}
+.ph-score-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #F4F5F7;font-size:12px;}
+.ph-score-row:last-child{border-bottom:none;}
+.ph-score-btns{display:flex;gap:4px;}
+.ph-score-btn{width:26px;height:22px;border-radius:4px;border:1px solid var(--border);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;}
+.ph-score-btn.sel{background:var(--blue);border-color:var(--blue);color:#fff;}
+.ph-btn{width:100%;padding:11px;border-radius:8px;border:none;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:6px;}
+.ph-btn-primary{background:var(--blue);color:#fff;}
+.ph-btn-green{background:var(--green);color:#fff;}
+.ph-btn-outline{background:#fff;border:1px solid var(--border);color:var(--text);}
+.ph-task-item{background:#fff;border-radius:10px;margin-bottom:8px;padding:12px 14px;}
+.ph-task-row{display:flex;justify-content:space-between;align-items:flex-start;}
+.ph-task-name{font-size:13px;font-weight:600;}
+.ph-task-meta{font-size:11px;color:var(--text3);margin-top:3px;}
+.ph-upload-area{border:1.5px dashed var(--border);border-radius:8px;padding:16px;text-align:center;color:var(--text3);font-size:11px;margin-bottom:8px;}
+.ph-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;}
+.ph-photo-thumb{border-radius:6px;overflow:hidden;height:60px;background:linear-gradient(135deg,#D5E8F0,#B5CDE8);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ph-issue-item{background:#FFF8F0;border-radius:8px;border-left:3px solid var(--amber);padding:10px 12px;margin-bottom:8px;}
+
+/* SIDEBAR */
+.flow-steps{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;width:200px;flex-shrink:0;}
+.flow-step{display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;cursor:pointer;margin-bottom:4px;}
+.flow-step:hover{background:var(--gray);}
+.flow-step.active{background:var(--blue-l);}
+.flow-step .step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.flow-step.active .step-num{background:var(--blue);color:#fff;}
+.flow-step:not(.active) .step-num{background:var(--gray);color:var(--text3);}
+.flow-step.done .step-num{background:var(--green);color:#fff;}
+.flow-step-label{font-size:11px;font-weight:500;}
+.flow-step.active .flow-step-label{color:var(--blue);}
+.flow-step:not(.active) .flow-step-label{color:var(--text3);}
+.flow-step.done .flow-step-label{color:var(--green);}
+
+/* ANNOTATIONS */
+.annotations{margin-top:16px;background:#FFFDF0;border:1px solid #F5E67A;border-radius:8px;padding:14px 16px;}
+.ann-title{font-size:11px;font-weight:700;color:#7A6600;margin-bottom:8px;}
+.ann-item{font-size:11px;color:#5A4D00;line-height:1.8;display:flex;gap:6px;}
+.ann-item::before{content:"📌";flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- LEFT NAV -->
+<div class="left-nav">
+  <div class="nav-brand">
+    <div class="logo">衢食严选</div>
+    <div class="sub">门店巡检管理系统 v1.1</div>
+  </div>
+  <div class="nav-section">PC 管理端</div>
+  <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+    <span class="ico">📊</span> 数据看板
+  </div>
+  <div class="nav-item" onclick="showPage('tasks')" id="nav-tasks">
+    <span class="ico">📋</span> 任务管理
+  </div>
+  <div class="nav-item" onclick="showPage('orders')" id="nav-orders">
+    <span class="ico">🔧</span> 整改工单 <span class="badge" style="margin-left:auto;">5</span>
+  </div>
+  <div class="nav-item" onclick="showPage('warning')" id="nav-warning">
+    <span class="ico">🔔</span> 智能预警 <span class="badge" style="margin-left:auto;background:#E89A00;">3</span>
+  </div>
+  <div class="nav-item" onclick="showPage('stores')" id="nav-stores">
+    <span class="ico">🏪</span> 门店管理
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">移动端原型</div>
+  <div class="nav-item" onclick="showPage('mobile-task')" id="nav-mobile-task">
+    <span class="ico">📱</span> 流程①：任务接收
+  </div>
+  <div class="nav-item" onclick="showPage('mobile-inspect')" id="nav-mobile-inspect">
+    <span class="ico">📱</span> 流程②：现场巡检
+  </div>
+  <div class="nav-item" onclick="showPage('mobile-rectify')" id="nav-mobile-rectify">
+    <span class="ico">📱</span> 流程③：整改处理
+  </div>
+  <div class="nav-user">
+    <div class="nav-avatar">李</div>
+    <div>
+      <div style="font-size:11px;color:#fff;font-weight:500;">李晓琳</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.4);">产品助理</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ======================== PAGE: 数据看板 ======================== -->
+  <div class="page-view active" id="page-dashboard">
+    <div class="topbar">
+      <span class="topbar-title">数据看板</span>
+      <span style="font-size:11px;color:var(--text3);">数据截至：2024-10-15 09:30</span>
+      <div class="topbar-right">
+        <button class="btn btn-outline btn-sm">导出报表</button>
+        <button class="btn btn-primary btn-sm">+ 新建任务</button>
+      </div>
+    </div>
+    <div class="content">
+      <!-- 统计卡片 -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" style="color:var(--blue);">57</div>
+          <div class="stat-lbl">门店总数</div>
+          <div class="stat-delta" style="color:var(--text3);">覆盖衢州5区县</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="color:var(--green);">72%</div>
+          <div class="stat-lbl">本月整改完成率</div>
+          <div class="stat-delta" style="color:var(--green);">↑ 较上月 +25%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="color:var(--amber);">3</div>
+          <div class="stat-lbl">当前红色预警门店</div>
+          <div class="stat-delta" style="color:var(--amber);">需立即处理</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" style="color:var(--text);">243</div>
+          <div class="stat-lbl">本季度巡检总次数</div>
+          <div class="stat-delta" style="color:var(--text3);">Q3 2024</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
+        <!-- 区域整改完成率 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>各区域整改完成率</h3>
+            <span style="font-size:11px;color:var(--text3);">2024年Q3</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
+                  <span>柯城区</span><span style="font-weight:600;color:var(--red);">43%</span>
+                </div>
+                <div class="pbar"><div class="pbar-fill" style="width:43%;background:var(--red);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
+                  <span>衢江区</span><span style="font-weight:600;color:var(--amber);">46%</span>
+                </div>
+                <div class="pbar"><div class="pbar-fill" style="width:46%;background:var(--amber);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
+                  <span>龙游县</span><span style="font-weight:600;color:var(--amber);">48%</span>
+                </div>
+                <div class="pbar"><div class="pbar-fill" style="width:48%;background:var(--amber);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
+                  <span>江山市</span><span style="font-weight:600;color:var(--green);">51%</span>
+                </div>
+                <div class="pbar"><div class="pbar-fill" style="width:51%;background:var(--green);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;">
+                  <span>常山县</span><span style="font-weight:600;color:var(--amber);">46%</span>
+                </div>
+                <div class="pbar"><div class="pbar-fill" style="width:46%;background:var(--amber);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 问题类型分布 -->
+        <div class="card">
+          <div class="card-header"><h3>问题分类分布</h3></div>
+          <div class="card-body">
+            <div class="chart-bars">
+              <div class="bar-col"><div class="bar-fill-mock" style="height:100%;background:#1F5FAA;border-radius:4px 4px 0 0;"></div><span class="bar-lbl">厨房<br>卫生</span></div>
+              <div class="bar-col"><div class="bar-fill-mock" style="height:57%;background:#4A7EC7;border-radius:4px 4px 0 0;"></div><span class="bar-lbl">食材<br>存储</span></div>
+              <div class="bar-col"><div class="bar-fill-mock" style="height:36%;background:#7BA3D8;border-radius:4px 4px 0 0;"></div><span class="bar-lbl">员工<br>规范</span></div>
+              <div class="bar-col"><div class="bar-fill-mock" style="height:22%;background:#A8C4E8;border-radius:4px 4px 0 0;"></div><span class="bar-lbl">消防<br>安全</span></div>
+              <div class="bar-col"><div class="bar-fill-mock" style="height:15%;background:#C8DBF0;border-radius:4px 4px 0 0;"></div><span class="bar-lbl">环境<br>卫生</span></div>
+              <div class="bar-col"><div class="bar-fill-mock" style="height:9%;background:#DDE9F5;border-radius:4px 4px 0 0;"></div><span class="bar-lbl">其他</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 门店评分排行 -->
+      <div class="card" style="margin-top:0;">
+        <div class="card-header">
+          <h3>门店评分排行（后5名）</h3>
+          <span class="tag tag-red">需重点关注</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="tbl">
+            <thead><tr><th>排名</th><th>门店名称</th><th>区域</th><th>最近评分</th><th>上次评分</th><th>整改完成率</th><th>预警状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--red);font-weight:700;">#53</td><td>衢州大厦店</td><td>柯城区</td><td><span style="color:var(--red);font-weight:700;">52分</span></td><td><span style="color:var(--red);">55分</span></td><td>28%</td><td><span class="tag tag-red">🔴 红色预警</span></td><td><button class="btn btn-primary btn-sm">查看详情</button></td></tr>
+              <tr><td style="color:var(--red);font-weight:700;">#54</td><td>航埠镇加盟店</td><td>柯城区</td><td><span style="color:var(--red);font-weight:700;">54分</span></td><td><span style="color:var(--amber);">58分</span></td><td>33%</td><td><span class="tag tag-red">🔴 红色预警</span></td><td><button class="btn btn-primary btn-sm">查看详情</button></td></tr>
+              <tr><td style="color:var(--amber);font-weight:700;">#55</td><td>龙游龙洲路店</td><td>龙游县</td><td><span style="color:var(--amber);font-weight:700;">61分</span></td><td><span style="color:var(--amber);">59分</span></td><td>40%</td><td><span class="tag tag-amber">🟡 观察中</span></td><td><button class="btn btn-outline btn-sm">查看</button></td></tr>
+              <tr><td style="color:var(--amber);font-weight:700;">#56</td><td>常山球川镇店</td><td>常山县</td><td><span style="color:var(--amber);font-weight:700;">63分</span></td><td><span style="color:var(--green);">70分</span></td><td>42%</td><td><span class="tag tag-amber">🟡 观察中</span></td><td><button class="btn btn-outline btn-sm">查看</button></td></tr>
+              <tr><td style="color:var(--text3);">#57</td><td>江山清湖镇店</td><td>江山市</td><td><span style="color:var(--amber);font-weight:700;">65分</span></td><td><span style="color:var(--amber);">62分</span></td><td>50%</td><td><span class="tag tag-green">✅ 正常</span></td><td><button class="btn btn-outline btn-sm">查看</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== PAGE: 任务管理 ======================== -->
+  <div class="page-view" id="page-tasks">
+    <div class="topbar">
+      <span class="topbar-title">任务管理</span>
+      <div class="topbar-right">
+        <select class="form-select" style="font-size:12px;padding:5px 8px;">
+          <option>全部区域</option><option>柯城区</option><option>衢江区</option><option>龙游县</option>
+        </select>
+        <button class="btn btn-primary btn-sm">+ 新建巡检任务</button>
+      </div>
+    </div>
+    <div class="content">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue);">12</div><div class="stat-lbl">本周待执行</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green);">8</div><div class="stat-lbl">已完成</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--red);">2</div><div class="stat-lbl">逾期未执行</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>任务列表</h3>
+          <div style="display:flex;gap:8px;">
+            <span class="tag tag-blue" style="cursor:pointer;">全部</span>
+            <span class="tag tag-gray" style="cursor:pointer;">待执行</span>
+            <span class="tag tag-gray" style="cursor:pointer;">进行中</span>
+            <span class="tag tag-gray" style="cursor:pointer;">已完成</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="tbl">
+            <thead><tr><th>任务ID</th><th>门店名称</th><th>区域</th><th>巡检员</th><th>计划日期</th><th>优先级</th><th>状态</th><th>评分</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--text3);">T-2024-0089</td><td>步行街旗舰店</td><td>柯城区</td><td>张丽</td><td>10-16</td><td><span class="tag tag-red">紧急</span></td><td><span class="tag tag-amber">待执行</span></td><td>—</td><td><button class="btn btn-outline btn-sm">详情</button></td></tr>
+              <tr><td style="color:var(--text3);">T-2024-0088</td><td>衢江大道店</td><td>衢江区</td><td>王芳</td><td>10-15</td><td><span class="tag tag-blue">普通</span></td><td><span class="tag tag-green">已完成</span></td><td style="color:var(--green);font-weight:600;">82分</td><td><button class="btn btn-outline btn-sm">报告</button></td></tr>
+              <tr><td style="color:var(--text3);">T-2024-0087</td><td>龙游东大街店</td><td>龙游县</td><td>陈强</td><td>10-15</td><td><span class="tag tag-blue">普通</span></td><td><span class="tag tag-green">已完成</span></td><td style="color:var(--green);font-weight:600;">76分</td><td><button class="btn btn-outline btn-sm">报告</button></td></tr>
+              <tr><td style="color:var(--text3);">T-2024-0086</td><td>衢州大厦店</td><td>柯城区</td><td>张丽</td><td>10-14</td><td><span class="tag tag-red">紧急</span></td><td><span class="tag tag-green">已完成</span></td><td style="color:var(--red);font-weight:600;">52分</td><td><button class="btn btn-primary btn-sm">查看预警</button></td></tr>
+              <tr><td style="color:var(--text3);">T-2024-0085</td><td>航埠镇加盟店</td><td>柯城区</td><td>李明</td><td>10-13</td><td><span class="tag tag-amber">较高</span></td><td><span class="tag tag-green">已完成</span></td><td style="color:var(--red);font-weight:600;">54分</td><td><button class="btn btn-primary btn-sm">查看预警</button></td></tr>
+              <tr><td style="color:var(--text3);">T-2024-0084</td><td>常山紫港街道店</td><td>常山县</td><td>赵雷</td><td>10-12</td><td><span class="tag tag-blue">普通</span></td><td><span class="tag tag-red">逾期</span></td><td>—</td><td><button class="btn btn-outline btn-sm">重新派发</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== PAGE: 整改工单 ======================== -->
+  <div class="page-view" id="page-orders">
+    <div class="topbar">
+      <span class="topbar-title">整改工单</span>
+      <div class="topbar-right">
+        <button class="btn btn-outline btn-sm">筛选</button>
+        <button class="btn btn-outline btn-sm">导出</button>
+      </div>
+    </div>
+    <div class="content">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+        <div class="stat-card"><div class="stat-val" style="color:var(--red);">5</div><div class="stat-lbl">待整改</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--amber);">8</div><div class="stat-lbl">整改中</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue);">3</div><div class="stat-lbl">待验收</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green);">47</div><div class="stat-lbl">已完成（本月）</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>工单列表</h3>
+          <div style="display:flex;gap:6px;">
+            <span class="tag tag-red" style="cursor:pointer;">待整改 5</span>
+            <span class="tag tag-gray" style="cursor:pointer;">整改中 8</span>
+            <span class="tag tag-gray" style="cursor:pointer;">待验收 3</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="tbl">
+            <thead><tr><th>工单编号</th><th>问题描述</th><th>门店</th><th>责任人</th><th>截止日期</th><th>紧急度</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--text3);">WD-0215</td><td>厨房操作台存在积水，未及时清洁</td><td>衢州大厦店</td><td>陈伟（店长）</td><td style="color:var(--red);">10-17 ⚠️</td><td><span class="tag tag-red">高</span></td><td><span class="tag tag-red">待整改</span></td><td><button class="btn btn-primary btn-sm">催办</button></td></tr>
+              <tr><td style="color:var(--text3);">WD-0214</td><td>冷链冰柜温度超标（实测6.8°C）</td><td>衢州大厦店</td><td>陈伟（店长）</td><td style="color:var(--red);">10-17 ⚠️</td><td><span class="tag tag-red">高</span></td><td><span class="tag tag-red">待整改</span></td><td><button class="btn btn-primary btn-sm">催办</button></td></tr>
+              <tr><td style="color:var(--text3);">WD-0213</td><td>员工未佩戴口罩上岗，违反操作规范</td><td>航埠镇加盟店</td><td>刘峰（店长）</td><td>10-18</td><td><span class="tag tag-amber">中</span></td><td><span class="tag tag-amber">整改中</span></td><td><button class="btn btn-outline btn-sm">查看进度</button></td></tr>
+              <tr><td style="color:var(--text3);">WD-0212</td><td>消防通道被杂物堵塞</td><td>龙游龙洲路店</td><td>赵敏（店长）</td><td>10-19</td><td><span class="tag tag-red">高</span></td><td><span class="tag tag-amber">整改中</span></td><td><button class="btn btn-outline btn-sm">查看进度</button></td></tr>
+              <tr><td style="color:var(--text3);">WD-0211</td><td>食材标签日期标注不规范</td><td>衢江大道店</td><td>王磊（店长）</td><td>10-16</td><td><span class="tag tag-blue">低</span></td><td><span class="tag tag-blue">待验收</span></td><td><button class="btn btn-primary btn-sm">验收</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== PAGE: 智能预警 ======================== -->
+  <div class="page-view" id="page-warning">
+    <div class="topbar">
+      <span class="topbar-title">智能预警中心</span>
+      <span style="font-size:11px;color:var(--text3);">V1.1 新功能</span>
+      <div class="topbar-right">
+        <button class="btn btn-outline btn-sm">预警规则设置</button>
+      </div>
+    </div>
+    <div class="content">
+      <div style="background:#FFF0F0;border:1px solid #F5CCCC;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+        <span style="font-size:20px;">🚨</span>
+        <div>
+          <div style="font-weight:600;color:var(--red);font-size:13px;">当前有 3 家门店触发红色预警</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">触发条件：连续2次巡检综合评分低于60分 · 需区域经理在48小时内确认处理</div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-left:auto;background:var(--red);">一键处理全部</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <!-- 预警卡片 -->
+        <div class="card" style="border-left:4px solid var(--red);">
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-red">🔴 红色预警</span>
+                  <span style="font-size:13px;font-weight:700;">衢州大厦店</span>
+                  <span style="font-size:11px;color:var(--text3);">柯城区 · 加盟店</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:10px;">
+                  <div><div style="font-size:11px;color:var(--text3);">最近评分</div><div style="font-size:18px;font-weight:700;color:var(--red);">52分</div></div>
+                  <div><div style="font-size:11px;color:var(--text3);">上次评分</div><div style="font-size:18px;font-weight:700;color:var(--red);">55分</div></div>
+                  <div><div style="font-size:11px;color:var(--text3);">整改完成率</div><div style="font-size:18px;font-weight:700;color:var(--red);">28%</div></div>
+                  <div><div style="font-size:11px;color:var(--text3);">主要问题</div><div style="font-size:12px;font-weight:600;color:var(--text);margin-top:3px;">厨房卫生・食材存储</div></div>
+                </div>
+                <div style="font-size:11px;color:var(--text3);">预警触发时间：2024-10-15 08:12 · 负责区域经理：王建国</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <button class="btn btn-primary btn-sm">派发专项整改</button>
+                <button class="btn btn-outline btn-sm">查看完整报告</button>
+                <button class="btn btn-outline btn-sm" style="color:var(--text3);">标记已知晓</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left:4px solid var(--red);">
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span class="tag tag-red">🔴 红色预警</span>
+                  <span style="font-size:13px;font-weight:700;">航埠镇加盟店</span>
+                  <span style="font-size:11px;color:var(--text3);">柯城区 · 加盟店</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:10px;">
+                  <div><div style="font-size:11px;color:var(--text3);">最近评分</div><div style="font-size:18px;font-weight:700;color:var(--red);">54分</div></div>
+                  <div><div style="font-size:11px;color:var(--text3);">上次评分</div><div style="font-size:18px;font-weight:700;color:var(--red);">58分</div></div>
+                  <div><div style="font-size:11px;color:var(--text3);">整改完成率</div><div style="font-size:18px;font-weight:700;color:var(--amber);">33%</div></div>
+                  <div><div style="font-size:11px;color:var(--text3);">主要问题</div><div style="font-size:12px;font-weight:600;color:var(--text);margin-top:3px;">员工操作规范</div></div>
+                </div>
+                <div style="font-size:11px;color:var(--text3);">预警触发时间：2024-10-14 16:45 · 负责区域经理：王建国</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <button class="btn btn-primary btn-sm">派发专项整改</button>
+                <button class="btn btn-outline btn-sm">查看完整报告</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left:4px solid var(--amber);">
+          <div class="card-body">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <span class="tag tag-amber">🟡 观察预警</span>
+              <span style="font-size:13px;font-weight:700;">龙游龙洲路店</span>
+              <span style="font-size:11px;color:var(--text3);">龙游县 · 直营店 · 单次低于70分</span>
+            </div>
+            <div style="font-size:11px;color:var(--text3);">本次评分61分（单次触发），下次评分将决定是否升级为红色预警</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== PAGE: 门店管理 ======================== -->
+  <div class="page-view" id="page-stores">
+    <div class="topbar">
+      <span class="topbar-title">门店管理</span>
+      <div class="topbar-right">
+        <input class="form-input" placeholder="搜索门店名称..." style="width:200px;padding:5px 10px;font-size:12px;">
+        <button class="btn btn-primary btn-sm">+ 新增门店</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="card">
+        <div class="card-header">
+          <h3>全部门店（57家）</h3>
+          <div style="display:flex;gap:6px;">
+            <span class="tag tag-green" style="cursor:pointer;">正常 51家</span>
+            <span class="tag tag-amber" style="cursor:pointer;">观察 3家</span>
+            <span class="tag tag-red" style="cursor:pointer;">预警 3家</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="tbl">
+            <thead><tr><th>门店名称</th><th>区域</th><th>类型</th><th>负责人</th><th>联系电话</th><th>最近巡检</th><th>综合评分</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td><strong>步行街旗舰店</strong></td><td>柯城区</td><td><span class="tag tag-blue">直营</span></td><td>张大伟</td><td>138-xxxx-0101</td><td>10-10</td><td style="color:var(--green);font-weight:600;">91分</td><td><span class="tag tag-green">正常</span></td></tr>
+              <tr><td><strong>府山路店</strong></td><td>柯城区</td><td><span class="tag tag-blue">直营</span></td><td>王小燕</td><td>139-xxxx-0202</td><td>10-08</td><td style="color:var(--green);font-weight:600;">88分</td><td><span class="tag tag-green">正常</span></td></tr>
+              <tr><td><strong>衢江大道店</strong></td><td>衢江区</td><td><span class="tag tag-gray">加盟</span></td><td>李志强</td><td>137-xxxx-0303</td><td>10-15</td><td style="color:var(--green);font-weight:600;">82分</td><td><span class="tag tag-green">正常</span></td></tr>
+              <tr><td><strong>龙游东大街店</strong></td><td>龙游县</td><td><span class="tag tag-gray">加盟</span></td><td>周建平</td><td>136-xxxx-0404</td><td>10-15</td><td style="color:var(--green);font-weight:600;">76分</td><td><span class="tag tag-green">正常</span></td></tr>
+              <tr><td><strong>龙游龙洲路店</strong></td><td>龙游县</td><td><span class="tag tag-blue">直营</span></td><td>赵敏</td><td>135-xxxx-0505</td><td>10-13</td><td style="color:var(--amber);font-weight:600;">61分</td><td><span class="tag tag-amber">观察</span></td></tr>
+              <tr><td><strong>衢州大厦店</strong></td><td>柯城区</td><td><span class="tag tag-gray">加盟</span></td><td>陈伟</td><td>158-xxxx-0606</td><td>10-14</td><td style="color:var(--red);font-weight:600;">52分</td><td><span class="tag tag-red">🔴预警</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== MOBILE: 流程①任务接收 ======================== -->
+  <div class="page-view" id="page-mobile-task">
+    <div class="topbar"><span class="topbar-title">📱 移动端原型 · 流程①：任务接收与查看</span></div>
+    <div class="content">
+      <div class="mobile-shell">
+        <!-- 步骤导航 -->
+        <div class="flow-steps">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px;">流程步骤</div>
+          <div class="flow-step done" id="ms1-1"><div class="step-num">✓</div><div class="flow-step-label">App 首页</div></div>
+          <div class="flow-step active" id="ms1-2"><div class="step-num">2</div><div class="flow-step-label">任务列表</div></div>
+          <div class="flow-step" id="ms1-3"><div class="step-num">3</div><div class="flow-step-label">任务详情</div></div>
+          <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:8px;">切换步骤</div>
+            <button class="btn btn-outline btn-sm" style="width:100%;margin-bottom:6px;" onclick="mobileStep('task',1)">← 上一步</button>
+            <button class="btn btn-primary btn-sm" style="width:100%;" onclick="mobileStep('task',3)">下一步 →</button>
+          </div>
+        </div>
+
+        <!-- 手机 -->
+        <div class="mobile-frame">
+          <div class="mobile-label">任务列表页</div>
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+            <div class="phone-screen">
+              <div class="ph-topbar">
+                <span class="ph-back">←</span>
+                <span class="ph-title">我的任务</span>
+                <span style="color:rgba(255,255,255,0.7);font-size:12px;">10月</span>
+              </div>
+              <div class="ph-content" style="max-height:520px;overflow-y:auto;">
+                <!-- 今日任务 -->
+                <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">今日待执行（2）</div>
+                <div class="ph-task-item" style="border-left:3px solid var(--red);">
+                  <div class="ph-task-row">
+                    <div class="ph-task-name">步行街旗舰店</div>
+                    <span class="tag tag-red" style="font-size:10px;">紧急</span>
+                  </div>
+                  <div class="ph-task-meta">柯城区 · 计划时间：09:00-11:00</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+                    <span style="font-size:10px;color:var(--text3);">评分项：42项 · 预计45分钟</span>
+                    <button class="btn btn-primary" style="padding:4px 12px;font-size:11px;" onclick="mobileStep('task',3)">开始巡检</button>
+                  </div>
+                </div>
+                <div class="ph-task-item" style="border-left:3px solid var(--blue);">
+                  <div class="ph-task-row">
+                    <div class="ph-task-name">府山路店</div>
+                    <span class="tag tag-blue" style="font-size:10px;">普通</span>
+                  </div>
+                  <div class="ph-task-meta">柯城区 · 计划时间：14:00-16:00</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+                    <span style="font-size:10px;color:var(--text3);">评分项：42项 · 预计45分钟</span>
+                    <button class="btn btn-outline" style="padding:4px 12px;font-size:11px;">查看详情</button>
+                  </div>
+                </div>
+                <div style="font-size:11px;font-weight:700;color:var(--text3);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.05em;">明日任务（3）</div>
+                <div class="ph-task-item" style="opacity:.6;">
+                  <div class="ph-task-name">衢江大道店</div>
+                  <div class="ph-task-meta">衢江区 · 10月17日 09:00</div>
+                </div>
+                <div class="ph-task-item" style="opacity:.6;">
+                  <div class="ph-task-name">龙游东大街店</div>
+                  <div class="ph-task-meta">龙游县 · 10月17日 14:00</div>
+                </div>
+              </div>
+              <div class="ph-home-bar"><div class="ph-home-pill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 标注 -->
+        <div style="flex:1;min-width:200px;">
+          <div class="annotations">
+            <div class="ann-title">设计说明</div>
+            <div class="ann-item">任务列表按「今日/明日/本周」分组展示，紧急任务红色左边框视觉突出，第一眼即可识别优先级。</div>
+            <div class="ann-item" style="margin-top:6px;">「开始巡检」按钮直接在列表页可操作，减少进入详情的跳转层级，提升巡检员一线使用效率。</div>
+            <div class="ann-item" style="margin-top:6px;">任务卡片展示「评分项数量+预计时间」，帮助巡检员合理规划行程。</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px;">关联功能</div>
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot" style="background:var(--green);"></div><div class="tl-line"></div><div class="tl-content"><div class="tl-text">GPS打卡签到</div><div class="tl-time">到达门店后自动请求定位</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--blue);"></div><div class="tl-line"></div><div class="tl-content"><div class="tl-text">历史记录查阅</div><div class="tl-time">可查看该门店上次巡检结果</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--amber);"></div><div class="tl-line"></div><div class="tl-content"><div class="tl-text">离线缓存</div><div class="tl-time">无网络时任务仍可查看和填写</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== MOBILE: 流程②现场巡检 ======================== -->
+  <div class="page-view" id="page-mobile-inspect">
+    <div class="topbar"><span class="topbar-title">📱 移动端原型 · 流程②：现场巡检评分</span></div>
+    <div class="content">
+      <div class="mobile-shell">
+        <div class="flow-steps">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px;">流程步骤</div>
+          <div class="flow-step done"><div class="step-num">✓</div><div class="flow-step-label">GPS签到</div></div>
+          <div class="flow-step active"><div class="step-num">2</div><div class="flow-step-label">填写评分表</div></div>
+          <div class="flow-step"><div class="step-num">3</div><div class="flow-step-label">拍照上传</div></div>
+          <div class="flow-step"><div class="step-num">4</div><div class="flow-step-label">提交巡检</div></div>
+          <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">进度</div>
+            <div class="pbar" style="margin-bottom:4px;"><div class="pbar-fill" style="width:52%;background:var(--green);"></div></div>
+            <div style="font-size:10px;color:var(--text3);">22/42 项已完成</div>
+          </div>
+        </div>
+
+        <div class="mobile-frame">
+          <div class="mobile-label">评分表填写页</div>
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+            <div class="phone-screen">
+              <div class="ph-topbar">
+                <span class="ph-back">←</span>
+                <span class="ph-title">厨房卫生评分</span>
+                <span style="color:rgba(255,255,255,0.7);font-size:11px;">22/42</span>
+              </div>
+              <div class="ph-content" style="max-height:520px;overflow-y:auto;">
+                <!-- 进度条 -->
+                <div style="margin-bottom:12px;">
+                  <div class="pbar" style="height:4px;"><div class="pbar-fill" style="width:52%;background:var(--green);"></div></div>
+                  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px;"><span>厨房卫生（3/8）</span><span>共42项</span></div>
+                </div>
+                <!-- 分类 -->
+                <div class="ph-card">
+                  <div class="ph-card-header">
+                    <span style="font-size:12px;font-weight:700;">三、操作台与设备清洁</span>
+                    <span style="font-size:10px;color:var(--text3);">权重 15%</span>
+                  </div>
+                  <div class="ph-card-body">
+                    <div class="ph-score-row">
+                      <span>3.1 操作台面无积水油渍</span>
+                      <div class="ph-score-btns">
+                        <div class="ph-score-btn" title="合格">✓</div>
+                        <div class="ph-score-btn sel" title="不合格" style="background:var(--red);border-color:var(--red);">✗</div>
+                        <div class="ph-score-btn" title="不适用">—</div>
+                      </div>
+                    </div>
+                    <div style="background:var(--red-l);border-radius:6px;padding:8px;margin-bottom:8px;">
+                      <div style="font-size:10px;color:var(--red);margin-bottom:4px;">⚠️ 不合格，请拍照记录并填写问题描述</div>
+                      <input class="form-input" placeholder="描述具体情况..." style="width:100%;margin-bottom:6px;font-size:11px;padding:5px 8px;">
+                      <button class="ph-btn" style="background:var(--red-l);color:var(--red);border:1px solid #F5CCCC;padding:6px;font-size:11px;border-radius:6px;">📷 拍照取证</button>
+                    </div>
+                    <div class="ph-score-row">
+                      <span>3.2 刀具砧板分类存放</span>
+                      <div class="ph-score-btns">
+                        <div class="ph-score-btn sel" style="background:var(--green);border-color:var(--green);color:#fff;">✓</div>
+                        <div class="ph-score-btn">✗</div>
+                        <div class="ph-score-btn">—</div>
+                      </div>
+                    </div>
+                    <div class="ph-score-row">
+                      <span>3.3 灶台无积碳油污</span>
+                      <div class="ph-score-btns">
+                        <div class="ph-score-btn">✓</div>
+                        <div class="ph-score-btn">✗</div>
+                        <div class="ph-score-btn">—</div>
+                      </div>
+                    </div>
+                    <div class="ph-score-row">
+                      <span>3.4 抽油烟机定期清洁</span>
+                      <div class="ph-score-btns">
+                        <div class="ph-score-btn sel" style="background:var(--green);border-color:var(--green);color:#fff;">✓</div>
+                        <div class="ph-score-btn">✗</div>
+                        <div class="ph-score-btn">—</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="ph-btn ph-btn-primary">下一分类 →</button>
+                <button class="ph-btn ph-btn-outline" style="margin-top:6px;font-size:11px;color:var(--text3);">暂存草稿</button>
+              </div>
+              <div class="ph-home-bar"><div class="ph-home-pill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:200px;">
+          <div class="annotations">
+            <div class="ann-title">设计说明</div>
+            <div class="ann-item">评分操作采用三态按钮（合格/不合格/不适用），单手拇指即可操作，减少填写摩擦。</div>
+            <div class="ann-item" style="margin-top:6px;">选择「不合格」后立即展开输入框和拍照入口，确保问题描述与照片同步留存，杜绝事后补录。</div>
+            <div class="ann-item" style="margin-top:6px;">顶部进度条实时显示完成比例，减少巡检员焦虑感，提升完成率。</div>
+            <div class="ann-item" style="margin-top:6px;">「暂存草稿」支持离线缓存，无网络环境也不会丢失填写进度。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== MOBILE: 流程③整改处理 ======================== -->
+  <div class="page-view" id="page-mobile-rectify">
+    <div class="topbar"><span class="topbar-title">📱 移动端原型 · 流程③：整改工单处理</span></div>
+    <div class="content">
+      <div class="mobile-shell">
+        <div class="flow-steps">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px;">流程步骤</div>
+          <div class="flow-step done"><div class="step-num">✓</div><div class="flow-step-label">接收工单通知</div></div>
+          <div class="flow-step done"><div class="step-num">✓</div><div class="flow-step-label">查看问题详情</div></div>
+          <div class="flow-step active"><div class="step-num">3</div><div class="flow-step-label">上传整改照片</div></div>
+          <div class="flow-step"><div class="step-num">4</div><div class="flow-step-label">提交整改报告</div></div>
+          <div class="flow-step"><div class="step-num">5</div><div class="flow-step-label">等待验收</div></div>
+          <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+            <div style="font-size:10px;color:var(--amber);font-weight:600;">⏰ 距截止还有</div>
+            <div style="font-size:18px;font-weight:700;color:var(--red);">23小时14分</div>
+            <div style="font-size:10px;color:var(--text3);">截止：10-17 18:00</div>
+          </div>
+        </div>
+
+        <div class="mobile-frame">
+          <div class="mobile-label">整改工单处理页</div>
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+            <div class="phone-screen">
+              <div class="ph-topbar">
+                <span class="ph-back">←</span>
+                <span class="ph-title">整改工单 WD-0215</span>
+              </div>
+              <div class="ph-content" style="max-height:520px;overflow-y:auto;">
+                <!-- 工单信息 -->
+                <div class="ph-card">
+                  <div class="ph-card-header">
+                    <span style="font-size:12px;font-weight:700;">问题信息</span>
+                    <span class="tag tag-red">待整改</span>
+                  </div>
+                  <div class="ph-card-body">
+                    <div class="ph-issue-item">
+                      <div style="font-size:12px;font-weight:600;color:var(--amber);">⚠️ 操作台面存在积水，未及时清洁</div>
+                      <div style="font-size:11px;color:var(--text3);margin-top:4px;">发现时间：2024-10-15 10:23</div>
+                    </div>
+                    <div style="margin-top:8px;">
+                      <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">问题现场照片</div>
+                      <div class="ph-photo-grid">
+                        <div class="ph-photo-thumb">🪣</div>
+                        <div class="ph-photo-thumb">📸</div>
+                        <div class="ph-photo-thumb" style="background:#F4F5F7;color:var(--text3);font-size:11px;">+1</div>
+                      </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+                      <span><span style="color:var(--text3);">截止日期：</span><span style="color:var(--red);font-weight:600;">10-17</span></span>
+                      <span><span style="color:var(--text3);">责任人：</span>陈伟（店长）</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 整改上报 -->
+                <div class="ph-card">
+                  <div class="ph-card-header">
+                    <span style="font-size:12px;font-weight:700;">整改上报</span>
+                  </div>
+                  <div class="ph-card-body">
+                    <div style="font-size:11px;color:var(--text2);margin-bottom:6px;">整改措施说明</div>
+                    <textarea class="form-input" rows="3" placeholder="请描述已采取的整改措施..." style="width:100%;resize:none;font-size:11px;"></textarea>
+                    <div style="font-size:11px;color:var(--text2);margin:8px 0 6px;">上传整改后照片（必须≥1张）</div>
+                    <div class="ph-photo-grid" style="margin-bottom:6px;">
+                      <div class="ph-photo-thumb" style="background:linear-gradient(135deg,#E6F6EE,#9FE1CB);">✅</div>
+                      <div class="ph-photo-thumb" style="background:#F4F5F7;border:1.5px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:20px;">+</div>
+                      <div class="ph-photo-thumb" style="background:#F4F5F7;border:1.5px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:20px;">+</div>
+                    </div>
+                    <button class="ph-btn ph-btn-green">提交整改报告</button>
+                  </div>
+                </div>
+              </div>
+              <div class="ph-home-bar"><div class="ph-home-pill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:200px;">
+          <div class="annotations">
+            <div class="ann-title">设计说明（V1.1迭代点）</div>
+            <div class="ann-item">工单详情页直接展示「截止日期」倒计时，配合V1.1新增的48h/24h到期提醒推送，确保责任人知悉紧迫程度。</div>
+            <div class="ann-item" style="margin-top:6px;">「整改后照片」为必填项，系统会拒绝无照片的提交，保证整改验收有据可查，避免仅文字确认带来的虚假闭环。</div>
+            <div class="ann-item" style="margin-top:6px;">整改流程完整记录：巡检员发现→自动生成工单→店长处理→总部验收，全链路可追溯。</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px;">整改状态流转</div>
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot" style="background:var(--blue);"></div><div class="tl-line"></div><div class="tl-content"><div class="tl-text">巡检发现问题</div><div class="tl-time">自动生成工单，分配责任人</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--amber);"></div><div class="tl-line"></div><div class="tl-content"><div class="tl-text">店长处理整改</div><div class="tl-time">上传照片+说明，提交报告</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--green);"></div><div class="tl-line"></div><div class="tl-content"><div class="tl-text">巡检员/区域经理验收</div><div class="tl-time">通过验收→工单关闭</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+</div><!-- end shell -->
+
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+}
+function mobileStep(flow, step) {
+  if(flow === 'task') {
+    if(step === 3) showPage('mobile-inspect');
+    else if(step === 1) showPage('mobile-task');
+  }
+}
+</script>
+</body>
+</html>

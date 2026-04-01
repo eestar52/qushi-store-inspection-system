@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>竞品分析 · 衢食严选门店巡检管理系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #1F5FAA;
+  --blue-light: #E8F0FB;
+  --blue-mid: #4A7EC7;
+  --green: #1A8C5A;
+  --green-light: #E6F6EE;
+  --amber: #C07800;
+  --amber-light: #FFF7E0;
+  --red: #C0392B;
+  --red-light: #FDEAEA;
+  --gray: #F4F5F7;
+  --border: #E2E6EC;
+  --text: #1A2333;
+  --text-2: #4A5568;
+  --text-3: #8A96A8;
+  --bg: #F7F9FC;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+.page { max-width: 1200px; margin: 0 auto; padding: 40px 32px 60px; }
+
+/* HEADER */
+.doc-header { background: var(--blue); border-radius: 16px; padding: 36px 40px; margin-bottom: 32px; position: relative; overflow: hidden; }
+.doc-header::before { content: ""; position: absolute; right: -60px; top: -60px; width: 260px; height: 260px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.doc-header::after { content: ""; position: absolute; right: 60px; bottom: -80px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+.doc-header h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.doc-header .meta { font-size: 13px; color: rgba(255,255,255,0.7); display: flex; gap: 24px; flex-wrap: wrap; margin-top: 10px; }
+.doc-header .meta span { display: flex; align-items: center; gap: 6px; }
+.chip { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.chip-white { background: rgba(255,255,255,0.18); color: #fff; }
+.chip-blue { background: var(--blue-light); color: var(--blue); }
+.chip-green { background: var(--green-light); color: var(--green); }
+.chip-amber { background: var(--amber-light); color: var(--amber); }
+.chip-red { background: var(--red-light); color: var(--red); }
+
+/* SECTION */
+.section { margin-bottom: 40px; }
+.section-title { font-size: 16px; font-weight: 700; color: var(--blue); border-left: 4px solid var(--blue); padding-left: 12px; margin-bottom: 16px; }
+.section-desc { font-size: 13px; color: var(--text-2); margin-bottom: 18px; line-height: 1.8; }
+
+/* COMPETITOR CARDS */
+.comp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.comp-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px 18px; position: relative; }
+.comp-card.our { border: 2px solid var(--blue); }
+.our-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--blue); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+.comp-logo { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.comp-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.comp-sub { font-size: 11px; color: var(--text-3); margin-bottom: 12px; }
+.comp-kv { display: flex; flex-direction: column; gap: 5px; }
+.kv-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.kv-label { color: var(--text-3); }
+.kv-value { font-weight: 500; color: var(--text); }
+
+/* FEATURE MATRIX */
+.matrix-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: #fff; }
+table.matrix { width: 100%; border-collapse: collapse; min-width: 800px; }
+table.matrix th { padding: 12px 16px; font-size: 12px; font-weight: 600; background: var(--blue); color: #fff; text-align: center; }
+table.matrix th:first-child { text-align: left; background: #1A4F94; }
+table.matrix td { padding: 10px 16px; font-size: 12px; border-bottom: 1px solid var(--border); text-align: center; }
+table.matrix td:first-child { text-align: left; font-weight: 500; color: var(--text); background: var(--gray); }
+table.matrix tr:last-child td { border-bottom: none; }
+table.matrix tr:hover td { background: var(--blue-light); }
+table.matrix tr:hover td:first-child { background: #dde8f7; }
+.col-our { background: rgba(31,95,170,0.05); }
+.icon-yes { color: #1A8C5A; font-size: 16px; }
+.icon-no { color: #CCC; font-size: 16px; }
+.icon-part { color: var(--amber); font-size: 16px; }
+.icon-new { color: var(--blue); font-size: 12px; font-weight: 700; background: var(--blue-light); padding: 2px 8px; border-radius: 10px; }
+.cat-row td { background: #EEF3FB !important; font-weight: 700; color: var(--blue); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* DIMENSION SCORES */
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.score-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.score-card h4 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+.score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.score-name { font-size: 12px; color: var(--text-2); width: 100px; flex-shrink: 0; }
+.score-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+.score-num { font-size: 12px; font-weight: 600; width: 32px; text-align: right; }
+
+/* POSITIONING MAP */
+.position-map { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+.quadrant-wrap { position: relative; width: 100%; padding-bottom: 50%; }
+.quadrant-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* SWOT */
+.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.swot-cell { padding: 20px; }
+.swot-cell h4 { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.swot-cell ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.swot-cell ul li { font-size: 12px; display: flex; gap: 8px; line-height: 1.5; }
+.swot-cell ul li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.swot-s { background: var(--green-light); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.swot-s h4 { color: var(--green); }
+.swot-s ul li::before { background: var(--green); }
+.swot-w { background: var(--red-light); border-bottom: 1px solid var(--border); }
+.swot-w h4 { color: var(--red); }
+.swot-w ul li::before { background: var(--red); }
+.swot-o { background: var(--blue-light); border-right: 1px solid var(--border); }
+.swot-o h4 { color: var(--blue); }
+.swot-o ul li::before { background: var(--blue); }
+.swot-t { background: var(--amber-light); }
+.swot-t h4 { color: var(--amber); }
+.swot-t ul li::before { background: var(--amber); }
+
+/* CONCLUSION */
+.conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.conc-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.conc-num { font-size: 28px; font-weight: 700; color: var(--blue); line-height: 1; margin-bottom: 6px; }
+.conc-label { font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 8px; }
+.conc-desc { font-size: 11px; color: var(--text-3); line-height: 1.7; }
+
+/* DIFF TABLE */
+.diff-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.diff-table th { background: var(--blue); color: #fff; padding: 10px 16px; font-size: 12px; font-weight: 600; text-align: left; }
+.diff-table td { padding: 10px 16px; font-size: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.diff-table tr:last-child td { border-bottom: none; }
+.diff-table tr:hover td { background: var(--blue-light); }
+.tag-diff { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+
+@media print {
+  body { background: #fff; }
+  .page { padding: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+    <div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:6px;">衢食严选 · 产品技术中心</div>
+      <h1>门店巡检管理系统 · 竞品分析报告</h1>
+      <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+        <span class="chip chip-white">B端SAAS</span>
+        <span class="chip chip-white">连锁餐饮行业</span>
+        <span class="chip chip-white">巡检管理赛道</span>
+      </div>
+    </div>
+    <div style="text-align:right; color:rgba(255,255,255,0.7); font-size:12px; line-height:1.8;">
+      <div>制作人：李晓琳（产品助理）</div>
+      <div>分析日期：2024年09月</div>
+      <div>竞品数量：3款</div>
+    </div>
+  </div>
+  <div class="meta">
+    <span>📌 分析目的：明确产品差异化定位，识别功能缺口与机会点</span>
+    <span>🎯 参考竞品：云巡检 · i巡店 · 蜜蜂巡检</span>
+  </div>
+</div>
+
+<!-- 1. 竞品概览 -->
+<div class="section">
+  <div class="section-title">一、竞品概览</div>
+  <div class="section-desc">选取目前市场上面向连锁餐饮/零售行业的主流B端巡检SAAS产品进行横向对比。三款竞品均有一定市场份额，覆盖不同价格带和功能深度，与衢食严选的需求场景有较高重叠度。</div>
+  <div class="comp-grid">
+    <!-- 我方产品 -->
+    <div class="comp-card our">
+      <div class="our-badge">▲ 我方产品</div>
+      <div class="comp-logo" style="background:#E8F0FB; color:#1F5FAA;">衢</div>
+      <div class="comp-name">衢食严选巡检系统</div>
+      <div class="comp-sub">自研 · 私有化部署 · 本地化深度定制</div>
+      <div class="comp-kv">
+        <div class="kv-row"><span class="kv-label">定价模式</span><span class="kv-value">内部自研，无外部定价</span></div>
+        <div class="kv-row"><span class="kv-label">目标客群</span><span class="kv-value">衢食严选57家门店</span></div>
+        <div class="kv-row"><span class="kv-label">核心优势</span><span class="kv-value">高度本地化定制</span></div>
+        <div class="kv-row"><span class="kv-label">当前阶段</span><span class="kv-value"><span class="chip chip-green">V1.1 已上线</span></span></div>
+      </div>
+    </div>
+    <!-- 云巡检 -->
+    <div class="comp-card">
+      <div class="comp-logo" style="background:#EEF3FB; color:#2E6BC7;">云</div>
+      <div class="comp-name">云巡检</div>
+      <div class="comp-sub">SaaS · 通用型 · 头部产品</div>
+      <div class="comp-kv">
+        <div class="kv-row"><span class="kv-label">定价模式</span><span class="kv-value">按账号/年，约2-5万/年</span></div>
+        <div class="kv-row"><span class="kv-label">目标客群</span><span class="kv-value">中大型连锁企业（100店+）</span></div>
+        <div class="kv-row"><span class="kv-label">核心优势</span><span class="kv-value">功能全面、集成生态丰富</span></div>
+        <div class="kv-row"><span class="kv-label">市场表现</span><span class="kv-value"><span class="chip chip-amber">头部，功能重</span></span></div>
+      </div>
+    </div>
+    <!-- i巡店 -->
+    <div class="comp-card">
+      <div class="comp-logo" style="background:#FFF0E8; color:#C05020;">i</div>
+      <div class="comp-name">i巡店</div>
+      <div class="comp-sub">SaaS · 轻量型 · 中小连锁</div>
+      <div class="comp-kv">
+        <div class="kv-row"><span class="kv-label">定价模式</span><span class="kv-value">按门店数，约800-1500/店/年</span></div>
+        <div class="kv-row"><span class="kv-label">目标客群</span><span class="kv-value">中小连锁（20-100店）</span></div>
+        <div class="kv-row"><span class="kv-label">核心优势</span><span class="kv-value">上手快、价格亲民</span></div>
+        <div class="kv-row"><span class="kv-label">市场表现</span><span class="kv-value"><span class="chip chip-blue">成长期</span></span></div>
+      </div>
+    </div>
+    <!-- 蜜蜂巡检 -->
+    <div class="comp-card">
+      <div class="comp-logo" style="background:#FFFAE0; color:#C07800;">🐝</div>
+      <div class="comp-name">蜜蜂巡检</div>
+      <div class="comp-sub">SaaS · 数据驱动型 · 餐饮专注</div>
+      <div class="comp-kv">
+        <div class="kv-row"><span class="kv-label">定价模式</span><span class="kv-value">按功能模块，约3-8万/年</span></div>
+        <div class="kv-row"><span class="kv-label">目标客群</span><span class="kv-value">餐饮连锁（50-300店）</span></div>
+        <div class="kv-row"><span class="kv-label">核心优势</span><span class="kv-value">餐饮场景深度、数据分析强</span></div>
+        <div class="kv-row"><span class="kv-label">市场表现</span><span class="kv-value"><span class="chip chip-amber">餐饮专属</span></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. 功能对比矩阵 -->
+<div class="section">
+  <div class="section-title">二、功能对比矩阵</div>
+  <div style="display:flex; gap:16px; margin-bottom:14px; font-size:11px; align-items:center;">
+    <span><span class="icon-yes">✓</span> 已有</span>
+    <span><span class="icon-part">◑</span> 部分支持</span>
+    <span><span class="icon-no">✗</span> 不支持</span>
+    <span><span class="icon-new">V1.1新增</span> 我方V1.1迭代点</span>
+  </div>
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th style="width:200px;">功能维度</th>
+          <th style="color:#FFD700; width:140px;">★ 衢食严选（我方）</th>
+          <th style="width:130px;">云巡检</th>
+          <th style="width:130px;">i巡店</th>
+          <th style="width:130px;">蜜蜂巡检</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 核心巡检 -->
+        <tr class="cat-row"><td colspan="5">核心巡检功能</td></tr>
+        <tr>
+          <td>移动端巡检表单</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>现场拍照上传（多张）</td>
+          <td class="col-our"><span class="icon-yes">✓</span> 单项5张</td>
+          <td><span class="icon-yes">✓</span> 不限张数</td>
+          <td><span class="icon-yes">✓</span> 单项3张</td>
+          <td><span class="icon-yes">✓</span> 单项5张</td>
+        </tr>
+        <tr>
+          <td>GPS打卡定位</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>离线缓存（无网可用）</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-part">◑</span> 仅基础项</td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>自定义评分项配置</td>
+          <td class="col-our"><span class="icon-part">◑</span> 固定模板</td>
+          <td><span class="icon-yes">✓</span> 完全自定义</td>
+          <td><span class="icon-part">◑</span> 有限配置</td>
+          <td><span class="icon-yes">✓</span> 餐饮专属模板</td>
+        </tr>
+        <!-- 整改管理 -->
+        <tr class="cat-row"><td colspan="5">整改管理</td></tr>
+        <tr>
+          <td>问题自动生成工单</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>整改截止日期提醒</td>
+          <td class="col-our"><span class="icon-new">V1.1新增</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-no">✗</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>整改验收流程</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-part">◑</span> 仅确认按钮</td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>整改完成率统计</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-part">◑</span> 仅计数</td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <!-- 数据分析 -->
+        <tr class="cat-row"><td colspan="5">数据分析与预警</td></tr>
+        <tr>
+          <td>门店评分排行看板</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-part">◑</span> 简版</td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>问题分类热力分析</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-no">✗</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>智能预警（低分自动触发）</td>
+          <td class="col-our"><span class="icon-new">V1.1新增</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-no">✗</span></td>
+          <td><span class="icon-part">◑</span> 需手动设置</td>
+        </tr>
+        <tr>
+          <td>历史趋势对比</td>
+          <td class="col-our"><span class="icon-part">◑</span> V1.2规划</td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-no">✗</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <!-- 其他 -->
+        <tr class="cat-row"><td colspan="5">部署与使用体验</td></tr>
+        <tr>
+          <td>私有化部署</td>
+          <td class="col-our"><span class="icon-yes">✓</span> 数据不出境</td>
+          <td><span class="icon-part">◑</span> 需额外付费</td>
+          <td><span class="icon-no">✗</span> 仅云端</td>
+          <td><span class="icon-part">◑</span> 企业版支持</td>
+        </tr>
+        <tr>
+          <td>本地化定制开发</td>
+          <td class="col-our"><span class="icon-yes">✓</span> 深度定制</td>
+          <td><span class="icon-part">◑</span> 有限配置</td>
+          <td><span class="icon-no">✗</span></td>
+          <td><span class="icon-part">◑</span> 餐饮场景定制</td>
+        </tr>
+        <tr>
+          <td>知识库/标准文档管理</td>
+          <td class="col-our"><span class="icon-new">V1.1新增</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-no">✗</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>多端（PC+移动端）</td>
+          <td class="col-our"><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+          <td><span class="icon-yes">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 3. 维度评分 -->
+<div class="section">
+  <div class="section-title">三、产品能力维度评分</div>
+  <div class="section-desc">以下评分基于功能深度、行业匹配度、实际使用场景综合判断（满分10分）。</div>
+  <div class="score-grid">
+    <div class="score-card">
+      <h4>功能完整度</h4>
+      <div class="score-row"><span class="score-name">衢食严选（我方）</span><div class="score-track"><div class="score-fill" style="width:72%;background:#1F5FAA;"></div></div><span class="score-num" style="color:#1F5FAA;">7.2</span></div>
+      <div class="score-row"><span class="score-name">云巡检</span><div class="score-track"><div class="score-fill" style="width:93%;background:#666;"></div></div><span class="score-num" style="color:#666;">9.3</span></div>
+      <div class="score-row"><span class="score-name">i巡店</span><div class="score-track"><div class="score-fill" style="width:60%;background:#888;"></div></div><span class="score-num" style="color:#888;">6.0</span></div>
+      <div class="score-row"><span class="score-name">蜜蜂巡检</span><div class="score-track"><div class="score-fill" style="width:85%;background:#888;"></div></div><span class="score-num" style="color:#888;">8.5</span></div>
+    </div>
+    <div class="score-card">
+      <h4>餐饮行业适配度</h4>
+      <div class="score-row"><span class="score-name">衢食严选（我方）</span><div class="score-track"><div class="score-fill" style="width:92%;background:#1F5FAA;"></div></div><span class="score-num" style="color:#1F5FAA;">9.2</span></div>
+      <div class="score-row"><span class="score-name">云巡检</span><div class="score-track"><div class="score-fill" style="width:70%;background:#666;"></div></div><span class="score-num" style="color:#666;">7.0</span></div>
+      <div class="score-row"><span class="score-name">i巡店</span><div class="score-track"><div class="score-fill" style="width:62%;background:#888;"></div></div><span class="score-num" style="color:#888;">6.2</span></div>
+      <div class="score-row"><span class="score-name">蜜蜂巡检</span><div class="score-track"><div class="score-fill" style="width:88%;background:#888;"></div></div><span class="score-num" style="color:#888;">8.8</span></div>
+    </div>
+    <div class="score-card">
+      <h4>移动端体验</h4>
+      <div class="score-row"><span class="score-name">衢食严选（我方）</span><div class="score-track"><div class="score-fill" style="width:78%;background:#1F5FAA;"></div></div><span class="score-num" style="color:#1F5FAA;">7.8</span></div>
+      <div class="score-row"><span class="score-name">云巡检</span><div class="score-track"><div class="score-fill" style="width:80%;background:#666;"></div></div><span class="score-num" style="color:#666;">8.0</span></div>
+      <div class="score-row"><span class="score-name">i巡店</span><div class="score-track"><div class="score-fill" style="width:85%;background:#888;"></div></div><span class="score-num" style="color:#888;">8.5</span></div>
+      <div class="score-row"><span class="score-name">蜜蜂巡检</span><div class="score-track"><div class="score-fill" style="width:75%;background:#888;"></div></div><span class="score-num" style="color:#888;">7.5</span></div>
+    </div>
+    <div class="score-card">
+      <h4>数据分析能力</h4>
+      <div class="score-row"><span class="score-name">衢食严选（我方）</span><div class="score-track"><div class="score-fill" style="width:75%;background:#1F5FAA;"></div></div><span class="score-num" style="color:#1F5FAA;">7.5</span></div>
+      <div class="score-row"><span class="score-name">云巡检</span><div class="score-track"><div class="score-fill" style="width:88%;background:#666;"></div></div><span class="score-num" style="color:#666;">8.8</span></div>
+      <div class="score-row"><span class="score-name">i巡店</span><div class="score-track"><div class="score-fill" style="width:45%;background:#888;"></div></div><span class="score-num" style="color:#888;">4.5</span></div>
+      <div class="score-row"><span class="score-name">蜜蜂巡检</span><div class="score-track"><div class="score-fill" style="width:90%;background:#888;"></div></div><span class="score-num" style="color:#888;">9.0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. 差异化定位 -->
+<div class="section">
+  <div class="section-title">四、差异化定位分析</div>
+  <table class="diff-table">
+    <thead>
+      <tr>
+        <th style="width:160px;">差异化维度</th>
+        <th>云巡检的做法</th>
+        <th>我方的选择</th>
+        <th style="width:120px;">战略意义</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>部署方式</strong></td>
+        <td>以云端SaaS为主，私有化需额外采购，成本高</td>
+        <td>私有化部署，门店经营数据不出衢州本地服务器，符合餐饮企业数据安全敏感性</td>
+        <td><span class="tag-diff chip chip-green">核心壁垒</span></td>
+      </tr>
+      <tr>
+        <td><strong>定价结构</strong></td>
+        <td>按账号数年付，对中小连锁成本压力大（云巡检约2-5万/年）</td>
+        <td>内部自研，一次性研发投入，长期边际成本趋零；无外部续费风险</td>
+        <td><span class="tag-diff chip chip-blue">成本优势</span></td>
+      </tr>
+      <tr>
+        <td><strong>本地化深度</strong></td>
+        <td>通用SaaS，餐饮评分项需手工配置，上线周期长</td>
+        <td>直接内置衢食严选品控部评分标准（厨房卫生/食材存储/员工操作等），开箱即用</td>
+        <td><span class="tag-diff chip chip-green">核心壁垒</span></td>
+      </tr>
+      <tr>
+        <td><strong>功能迭代速度</strong></td>
+        <td>需提交产品需求排期，响应周期2-4周</td>
+        <td>自研团队直接响应业务需求，V1.1从需求到上线仅15天（智能预警模块验证）</td>
+        <td><span class="tag-diff chip chip-blue">效率优势</span></td>
+      </tr>
+      <tr>
+        <td><strong>智能预警</strong></td>
+        <td>已有，但需手动配置阈值规则，运营成本高</td>
+        <td>V1.1内置「连续2次低于60分自动预警」逻辑，针对衢食严选管理层决策习惯定制</td>
+        <td><span class="tag-diff chip chip-amber">功能补齐</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 5. SWOT -->
+<div class="section">
+  <div class="section-title">五、衢食严选巡检系统 SWOT 分析</div>
+  <div class="swot-grid">
+    <div class="swot-cell swot-s">
+      <h4>💪 优势 Strengths</h4>
+      <ul>
+        <li>私有化部署，数据安全有保障，适合餐饮数据敏感场景</li>
+        <li>深度本地化：内置衢食严选品控标准，0配置即可使用</li>
+        <li>研发响应快，可按业务需求灵活迭代，不受外部产品路线图限制</li>
+        <li>长期综合成本低于采购外部SaaS</li>
+      </ul>
+    </div>
+    <div class="swot-cell swot-w">
+      <h4>⚠️ 劣势 Weaknesses</h4>
+      <ul>
+        <li>功能完整度与成熟产品（云巡检）仍有差距，如历史趋势对比、AI识别等</li>
+        <li>自定义评分项配置能力弱，新增品类时需研发介入</li>
+        <li>初期用户培训和系统推广需要较多运营资源投入</li>
+        <li>技术团队规模有限，复杂功能开发周期相对较长</li>
+      </ul>
+    </div>
+    <div class="swot-cell swot-o">
+      <h4>🚀 机会 Opportunities</h4>
+      <ul>
+        <li>食品安全监管趋严，数字化巡检已成餐饮连锁合规刚需</li>
+        <li>V1.2规划的历史趋势分析功能，可进一步提升管理决策质量</li>
+        <li>系统沉淀的标准数据可对外输出，形成行业竞争壁垒</li>
+        <li>衢州本地其他餐饮连锁品牌存在外部商业化可能性（长期）</li>
+      </ul>
+    </div>
+    <div class="swot-cell swot-t">
+      <h4>🔺 威胁 Threats</h4>
+      <ul>
+        <li>蜜蜂巡检、云巡检持续迭代，功能差距可能进一步扩大</li>
+        <li>外部SaaS降价或推出专属餐饮版本，内部研发成本优势缩小</li>
+        <li>研发团队人员变动可能影响系统维护连续性</li>
+        <li>业务快速扩张（如新增加盟区域）可能带来系统并发性能压力</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 6. 结论 -->
+<div class="section">
+  <div class="section-title">六、分析结论与产品策略建议</div>
+  <div class="conclusion-grid">
+    <div class="conc-card">
+      <div class="conc-num">01</div>
+      <div class="conc-label">守住本地化壁垒</div>
+      <div class="conc-desc">私有化部署 + 衢食严选品控标准内置是核心差异化，V1.x版本迭代应持续深化这一优势，而非单纯追赶云巡检的功能宽度。</div>
+    </div>
+    <div class="conc-card">
+      <div class="conc-num">02</div>
+      <div class="conc-label">补齐关键功能缺口</div>
+      <div class="conc-desc">「整改截止提醒」和「智能预警」已在V1.1上线，弥补了与蜜蜂巡检的主要功能差距。V1.2应重点攻克「历史趋势对比」，完善数据分析闭环。</div>
+    </div>
+    <div class="conc-card">
+      <div class="conc-num">03</div>
+      <div class="conc-label">提升配置灵活度</div>
+      <div class="conc-desc">当前评分项固定模板在57家门店场景足够用，但随业务扩张建议V1.2加入「运营人员可自配置评分项」能力，降低研发介入频次，提升系统可扩展性。</div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:40px; padding-top:20px; border-top:1px solid var(--border);">
+  衢食严选 · 产品技术中心 · 竞品分析报告 · 2024.09 · 李晓琳
+</div>
+
+</div>
+</body>
+</html>
